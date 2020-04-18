@@ -1,0 +1,10 @@
+name: vtscout
+title:
+username:
+account: dylanorrell
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2139528
+bundleId: 3029894
+url: https://dylanorrell.shinyapps.io/vtscout/
+when: 1587178871.46968
