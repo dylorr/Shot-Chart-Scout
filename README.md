@@ -1,2 +1,2 @@
-# web-shot-scout
-Web Shot Chart Scout Tool 
+# Web Shot Chart Scout Tool
+Created using R, Shiny, Luke Benz's ncaahoopR (https://github.com/lbenz730/ncaahoopR) 
