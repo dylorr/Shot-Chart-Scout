@@ -1,5 +1,5 @@
 # Shot Chart Scout Tool
-Created using R, Shiny, Todd Schneider's [BallR] (https://github.com/toddwschneider/ballr) and Luke Benz's [ncaahoopR] (https://github.com/lbenz730/ncaahoopR) 
+Created using R, Shiny, Todd Schneider's [BallR](https://github.com/toddwschneider/ballr) and Luke Benz's [ncaahoopR](https://github.com/lbenz730/ncaahoopR) 
 
 ## Visualize and aggregate shot chart data from any player, on any team from any year.
 
