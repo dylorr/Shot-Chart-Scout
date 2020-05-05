@@ -8,47 +8,26 @@
 #
 library(shiny)
 library(DT)
+library(ncaahoopR)
 
-server <- function (input, output) {
+
+server <- function (input, output,session) {
     
     source("function_callf.R", local = TRUE)
     
-    
+    opps <<- reactive({input$dropdown})
     
     #store reactive values
-    specify_team <<- reactive({input$specify_team})
-    specify_player <<- reactive ({input$specify_player})
-    specify_year <<- reactive ({input$specify_year})
+    specify_team <- reactive({input$specify_team})
+    specify_player <- reactive ({input$specify_player})
+    specify_year <- reactive ({input$specify_year})
     
-    autoInvalidate <- reactiveTimer(60000)
-    
-    
-    data <- observeEvent(input$run, {
-        showModal(modalDialog(title="Calculation in progress", "Please allow up to 60 seconds. Progress shown in bottom right corner.", easyClose = TRUE, fade=TRUE))
-        bball(specify_team(),specify_player(),specify_year())
-        shot_area_summary <- shot_area_summary
-        shot_zone_summary <- shot_zone_summary
-        overall_summary <- overall_summary
-        end_plot <- end_plot
+    observeEvent(input$getgames, {
         
-    })
-    
-    
-    output$area = renderDataTable({
-        autoInvalidate()
-        shot_area_summary
-    })#newlist[3] #shot_area_summary 
-    output$zone = renderDataTable({
-        autoInvalidate()
-        shot_zone_summary
-    }) #newlist[2] #shot_zone_summary
-    output$overall = renderDataTable({
-        autoInvalidate()
-        overall_summary
-    }) #newlist[1] #overall_summary
-    output$shotchart = renderPlot({
-        autoInvalidate()
-        end_plot
+        sched<-get_schedule(specify_team(),specify_year())
+        items <- as.character(paste(sched$opponent, sched$date))
+        updateSelectInput(session, "dropdown", choices = items)
+        
     })
     
     
@@ -56,6 +35,65 @@ server <- function (input, output) {
                           zone = NULL,
                           overall = NULL,
                           shotchart = NULL)
+
+    
+   # autoInvalidate <- reactiveTimer(30000)
+    
+    
+    data <- observeEvent(input$run, {
+        showModal(modalDialog(title="Calculation in progress", "Please allow up to 60 seconds. Progress shown in bottom right corner.", easyClose = TRUE, fade=TRUE))
+       
+        
+        #new --------
+        get_dates = function(x){
+            substring(x,nchar(x)-10+1)
+        }
+        
+         sched <<-get_schedule(specify_team(), specify_year())
+         dates1 <- as.Date(unname(sapply(opps(),get_dates)))
+         use_game_ids <-sched$game_id[sched$date %in% dates1]
+        #new --------
+        
+        bball(specify_team(),specify_player(),specify_year(), specify_game_ids= use_game_ids)
+        vals$area <- shot_area_summary
+        vals$zone <- shot_zone_summary
+        vals$overall <- overall_summary
+        vals$shotchart <- end_plot
+        
+    })
+   
+    
+    options(DT.options = list(dom = 't'))
+    
+    
+    output$area = renderDataTable({
+        if (is.null(vals$area)) return()
+        vals$area
+        
+        # autoInvalidate()
+        #shot_area_summary
+    })#newlist[3] #shot_area_summary 
+    output$zone = renderDataTable({
+        if (is.null(vals$zone)) return()
+        vals$zone
+        # autoInvalidate()
+       # shot_zone_summary
+    }) #newlist[2] #shot_zone_summary
+    output$overall = renderDataTable({
+        if (is.null(vals$overall)) return()
+        vals$overall
+        # autoInvalidate()
+       # overall_summary
+    }) #newlist[1] #overall_summary
+    output$shotchart = renderPlot({
+        if (is.null(vals$shotchart)) return()
+        vals$shotchart
+        # autoInvalidate()
+        # end_plot
+    })
+    
+    
+    
     
 }
 

@@ -1,11 +1,11 @@
-bball <<- function (specify_team, specify_player, specify_year){
-  source('plotcourt.R')
-  source('get_shot_locs_edited.R')
-  
-  
-  
+bball <<- function (specify_team, specify_player, specify_year, specify_game_ids){
+  source('plotcourt.R', local=TRUE)
+  source('get_shot_locs_edited.R', local = TRUE)
   library(ncaahoopR)
-  vector = get_game_ids(team = specify_team, season = specify_year)
+  #vector = get_game_ids(team = specify_team, season = specify_year)
+  
+  
+  
   team_shots = get_shot_locs_edited(vector)
   attach(team_shots)
   
@@ -27,7 +27,7 @@ bball <<- function (specify_team, specify_player, specify_year){
                    shot_data$x>=44  ~ "Right Side(R)",
                    shot_data$x>=31 & shot_data$x<44  ~ "Right Side Center(RC)",
                    shot_data$x>6 & shot_data$x < 19 ~ "Left Side Center(LC)",
-                   shot_data$x<= 6 ~ "Left Side(L)",
+                   shot_data$x< 6 ~ "Left Side(L)",
                    TRUE ~"Center(C)",
                  ),
                  shot_zone_range = case_when(
@@ -45,19 +45,12 @@ bball <<- function (specify_team, specify_player, specify_year){
                    shot_data$three_pt == TRUE ~ "Above the Break 3",
                    TRUE ~ "Mid-Range"
                  )
-                 
-                 
-                 
-                 
-                 
   )
   
   
   
-  #tomas = filter(shots, shooter == 'Tomas Woldetensae', three_pt == TRUE)
+ 
   tomas = filter(shots, shooter == specify_player)
-  
-  
   made = filter(tomas, outcome == 'made')
   missed = filter(tomas, outcome == 'missed')
   
@@ -72,19 +65,22 @@ bball <<- function (specify_team, specify_player, specify_year){
   shooting_percentage = round(nrow(made) / total_shots,2)
   
   #summary by location
-  shot_area_summary <<- merge(made_dist_loc,missed_dist_loc, by = "Var1")
+  shot_area_summary <<- merge(made_dist_loc,missed_dist_loc, by = "Var1", all=TRUE)
+  shot_area_summary[is.na(shot_area_summary)] <<- 0
   shot_area_summary["Shooting Percentage"] <<- round(shot_area_summary$Freq.x / (shot_area_summary$Freq.x + shot_area_summary$Freq.y), 2)
   shot_area_summary["Percentage of Shots"] <<- round((shot_area_summary$Freq.x + shot_area_summary$Freq.y) / (sum(shot_area_summary$Freq.x) + sum(shot_area_summary$Freq.y)),2)
   
   colnames(shot_area_summary) <<- c("Location", "Made", "Missed", "Shooting Percentage", "Percentage of Shots")
   
-  
-  shot_zone_summary <<- merge(made_dist,missed_dist, by = "Var1")
+  #summary by zone
+  shot_zone_summary <<- merge(made_dist,missed_dist, by = "Var1", all=TRUE)
+  shot_zone_summary[is.na(shot_zone_summary)] <<- 0
   shot_zone_summary["Shooting Percentage"] <<- round(shot_zone_summary$Freq.x / (shot_zone_summary$Freq.x + shot_zone_summary$Freq.y),2)
   shot_zone_summary["Percentage of Shots"] <<- round((shot_zone_summary$Freq.x + shot_zone_summary$Freq.y) / (sum(shot_zone_summary$Freq.x) + sum(shot_zone_summary$Freq.y)),2)
   colnames(shot_zone_summary) <<- c("Zone", "Made", "Missed", "Shooting Percentage", "Percentage of Shots")
   
-  overall_summary <<- cbind.data.frame(nrow(missed), nrow(made), total_shots, shooting_percentage)
+  overall_summary <<- cbind.data.frame(nrow(made), nrow(missed), total_shots, shooting_percentage)
+  colnames(overall_summary) <<- c("Made", "Missed", "Total Shots", "Shooting Percentage")
   
   games = lapply(tomas, function(x) length(table(x)))
   
@@ -101,11 +97,6 @@ bball <<- function (specify_team, specify_player, specify_year){
   
   
   end_plot <<- plot_court() + geom_point(data = tomas, aes(x = x, y=y, colour = outcome), alpha = 0.8) + scale_colour_manual(values=color_shot) + ggtitle(paste(specify_player,' (',specify_year,') ', "tracked shots", ' (', total_shots, ')', sep="")) + theme(plot.title = element_text(hjust = 0.5, size = 16, face = 'bold'))
-  
-  #colnames(overall_summary) <-c("Missed","Made", "Percentage")
-  #colnames(shot_area_summary) <- c("Location", "Made", "Missed", "Shooting Percentage", "Percentage of Shots")
-  #colnames(shot_zone_summary) <- c("Zone", "Made", "Missed", "Shooting Percentage", "Percentage of Shots")
-  
   
   
   return(list(overall_summary,shot_zone_summary,shot_area_summary,end_plot))

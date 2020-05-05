@@ -21,6 +21,10 @@ ui <- fluidPage(
             textInput(inputId = 'specify_team', label = "Specify Team", placeholder= "Virginia Tech"),
             textInput(inputId = 'specify_player', label = "Specify Player", placeholder= "Jalen Cone"),
             textInput(inputId = 'specify_year', label = "Specify Year", placeholder= "2019-20"),
+            actionButton("getgames", "Get Games"),
+            br(),
+            br(),
+            selectInput("dropdown", 'Select Games', choices = "", selected = NULL, multiple = TRUE),
             actionButton("run", "Run"),
             br(),
             br(),
@@ -30,7 +34,10 @@ ui <- fluidPage(
         
         mainPanel(
             
-            
+            tags$style(type="text/css",
+                       ".shiny-output-error { visibility: hidden; }",
+                       ".shiny-output-error:before { visibility: hidden; }"
+            ),
             plotOutput('shotchart'),
             dataTableOutput('overall', width = '80%'),
             dataTableOutput('area', width = '80%'),

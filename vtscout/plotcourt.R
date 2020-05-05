@@ -82,6 +82,7 @@ cercle_mil.out <- circle_fun(center = c(25,47), diameter = 6*2)
 cercle_mil.in <- circle_fun(center = c(25,47), diameter = (6-1/6)*2)
 
 
+
 group <- 1 # We assign the first group, and it gets incremented with each use of new_coords()
 court <- new_coords(c(0-1/6,0-1/6,53 + 1/6,53 + 1/6), c(0 - 1/6,0,0,0 - 1/6), group = group, descri = "ligne de fond")
 court <- rbind(court, new_coords(x = c(0-1/6,0-1/6,0,0), y = c(0,47-1/12,47-1/12,0), group = group, descri = "ligne gauche"))
@@ -131,9 +132,6 @@ P <- ggplot() + geom_polygon(data = court, aes(x = x, y = y, group = group), col
         axis.ticks.y = element_blank(), axis.title = element_blank()
   )
 
-
-P
-
 # Whole court with rotation
 P_180 <- ggplot() + geom_polygon(data = rotate_court(court, theta = pi/2), aes(x = x, y = y, group = group), col = "gray") +
   coord_equal() +
@@ -164,7 +162,16 @@ P_half <- ggplot() + geom_polygon(data = court[court$side==1,], aes(x = x, y = y
   )
 P_half
 
-P_half_180 <- ggplot() + geom_polygon(data = court[court$side==1,], theta = pi/2, aes(x = x, y = y, group = group), col = "gray") +
+# plot zones/areas dataframes
+d=data.frame(x=c(25,50,50,25), y=c(0,0,47,47))
+
+
+P_half_180 <- ggplot() + geom_polygon(data= d,color= 'red', fill='blue', alpha=0.2, aes(x = x, y = y,)) + 
+  geom_polygon(data = court[court$side==1,], theta = pi/2, aes(x = x, y = y, group = group), col = "gray") +
+  theme(
+    panel.border = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()) +
   coord_equal() +
   xlim(-2,50) +
   ylim(-55,2) +
@@ -177,4 +184,6 @@ P_half_180 <- ggplot() + geom_polygon(data = court[court$side==1,], theta = pi/2
   )
 return(P_half_180)
 }
+
+plot_court()
 

@@ -1,8 +1,24 @@
 get_shot_locs_edited <- function(game_ids) {
-  source("helpers.R")
+  source("helpers.R", local = TRUE)
   if(any(is.na(game_ids))) {
     error("game_ids missing with no default")
   }
+  
+  
+  #adding-------
+  
+  get_dates = function(x){
+    substring(x,nchar(x)-10+1)
+  }
+  
+  dates1 <- as.Date(unname(sapply(opps(),get_dates)))
+  game_ids <-sched$game_id[sched$date %in% dates1]
+  
+  
+  #game_ids = c('401182626','401168368')
+  
+  #-------
+  
   n <- length(game_ids)
   showNotification("Calculation in progress. Please allow for up to 60 seconds. Don't click run again", duration = 10, closeButton = TRUE)
   for(i in 1:n) {
