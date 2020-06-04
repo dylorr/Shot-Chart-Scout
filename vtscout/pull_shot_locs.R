@@ -12,8 +12,8 @@ library(aws.s3)
 
 #access S3 bucket with hist. data in it
 s3BucketName <- "cbb-data"
-Sys.setenv("AWS_ACCESS_KEY_ID" = "AKIAIOJEOG43LIAQNDVQ",
-           "AWS_SECRET_ACCESS_KEY" = "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",
+Sys.setenv("AWS_ACCESS_KEY_ID" = "KEY",
+           "AWS_SECRET_ACCESS_KEY" = "KEY",
            "AWS_DEFAULT_REGION" = "us-east-2")
 
 #get_bucket(bucket = s3BucketName, check_region = FALSE, url_style = 'virtual')
