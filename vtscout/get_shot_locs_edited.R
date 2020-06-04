@@ -11,16 +11,22 @@ get_shot_locs_edited <- function(game_ids) {
     substring(x,nchar(x)-10+1)
   }
   
+  #sched$date <- as.Date(
+   # paste0(as.character(sched$date)), 
+    #format = "%Y-%m-%d")
+  
   dates1 <- as.Date(unname(sapply(opps(),get_dates)))
   game_ids <-sched$game_id[sched$date %in% dates1]
-  
-  
-  #game_ids = c('401182626','401168368')
   
   #-------
   
   n <- length(game_ids)
   showNotification("Calculation in progress. Please allow for up to 60 seconds. Don't click run again", duration = 10, closeButton = TRUE)
+  
+  #add new condition-----
+
+  #add new condition-----
+  
   for(i in 1:n) {
     message(paste("Getting Shots for Game", i, "of", n))
     withProgress(message = 'Please wait...', detail = paste('Getting shots for game',i,'of',n), value = 0, {
@@ -98,10 +104,10 @@ get_shot_locs_edited <- function(game_ids) {
       }
     }
     }
-)}
+    )}
   
   if(!exists("total_df_all")) {
     return(NULL)
   }
   return(total_df_all)
-}
+  }

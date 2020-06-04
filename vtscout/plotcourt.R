@@ -163,10 +163,22 @@ P_half <- ggplot() + geom_polygon(data = court[court$side==1,], aes(x = x, y = y
 P_half
 
 # plot zones/areas dataframes
+d_l=data.frame(x=c(0,6,6,0), y=c(0,0,47,47))
+d_lc=data.frame(x=c(6,19,19,6), y=c(0,0,47,47))
+
+d_c=data.frame(x=c(19,31,31,19), y=c(0,0,47,47))
+
+d_rc=data.frame(x=c(31,44,44,31), y=c(0,0,47,47))
+d_r=data.frame(x=c(44,50,50,44), y=c(0,0,47,47))
+
 d=data.frame(x=c(25,50,50,25), y=c(0,0,47,47))
 
 
-P_half_180 <- ggplot() + geom_polygon(data= d,color= 'red', fill='blue', alpha=0.2, aes(x = x, y = y,)) + 
+P_half_180 <- ggplot() + geom_polygon(data= d_l,color= 'red', fill='blue', alpha=0.2, aes(x = x, y = y,)) + 
+   geom_polygon(data= d_lc,color= 'red', fill='firebrick3', alpha=0.2, aes(x = x, y = y,)) + 
+   geom_polygon(data= d_c,color= 'red', fill='forestgreen', alpha=0.2, aes(x = x, y = y,)) + 
+   geom_polygon(data= d_rc,color= 'red', fill='gold1', alpha=0.2, aes(x = x, y = y,)) + 
+   geom_polygon(data= d_r,color= 'red', fill='mediumorchid4', alpha=0.2, aes(x = x, y = y,)) + 
   geom_polygon(data = court[court$side==1,], theta = pi/2, aes(x = x, y = y, group = group), col = "gray") +
   theme(
     panel.border = element_blank(),
